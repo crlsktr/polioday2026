@@ -174,7 +174,7 @@
 	</div>
 	{#if round.status != 'playing'}
 	<div class="video-card">
-		<iframe width="560" height="315" src="https://www.youtube.com/embed/Tk9OFjVffa4?si=ww9PnP0Rq5LZsHr3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/QfY5tyugBhc?si=fjWZ0nxP_c2P4xJq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 	</div>
 	{/if}
 </div>
