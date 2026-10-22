@@ -28,9 +28,9 @@
 	const POLIO_NAME_ALIASES: Record<string, string> = {
 		'The United Kingdom': 'United Kingdom',
 		'United Kingdom': 'United Kingdom',
-		'Congo': 'Republic of the Congo',
+		Congo: 'Republic of the Congo',
 		'Republic of Congo': 'Republic of the Congo',
-		'Macedonia': 'North Macedonia',
+		Macedonia: 'North Macedonia',
 		'North Macedonia': 'North Macedonia'
 	};
 
@@ -40,21 +40,29 @@
 	const winnerPolioStatus = $derived(winner ? getPolioStatus(winner.name) : null);
 	const score = $derived(roundScore(round));
 	const lastMessage = $derived(getLastMessage(round));
-	const lastCountry = $derived(countries.find((country) => country.id === round.lastGuess?.countryId) ?? null);
+	const lastCountry = $derived(
+		countries.find((country) => country.id === round.lastGuess?.countryId) ?? null
+	);
 	const lastCountryPolioStatus = $derived(lastCountry ? getPolioStatus(lastCountry.name) : null);
 
 	function getPolioStatus(countryName: string): string {
 		const lookupName = POLIO_NAME_ALIASES[countryName] ?? countryName;
 		const record = polioByCountry.get(lookupName) ?? null;
 
-		if (record?.WildPoliovirusCasesByCountry_2025 !== null && record?.WildPoliovirusCasesByCountry_2025 !== undefined) {
+		if (
+			record?.WildPoliovirusCasesByCountry_2025 !== null &&
+			record?.WildPoliovirusCasesByCountry_2025 !== undefined
+		) {
 			const caseCount = record.WildPoliovirusCasesByCountry_2025;
 			if (caseCount !== null && caseCount > 0) {
 				return 'Eradication is ongoing';
 			}
 		}
 
-		if (record?.DateCountryDeclaredPolioFree === null || record?.DateCountryDeclaredPolioFree === undefined) {
+		if (
+			record?.DateCountryDeclaredPolioFree === null ||
+			record?.DateCountryDeclaredPolioFree === undefined
+		) {
 			return 'No eradication year available';
 		}
 
@@ -164,6 +172,11 @@
 			<button type="button" class="new-round" onclick={startNewRound}>New round</button>
 		</aside>
 	</div>
+	{#if round.status != 'playing'}
+	<div class="video-card">
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/Tk9OFjVffa4?si=ww9PnP0Rq5LZsHr3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+	</div>
+	{/if}
 </div>
 
 <style>
@@ -241,6 +254,13 @@
 		border-radius: 0.9rem;
 		background: rgba(30, 41, 59, 0.9);
 		border: 1px solid rgba(125, 211, 252, 0.25);
+	}
+
+	.video-card {
+		margin-top: 1.5rem;
+		border-radius: 1rem;
+		overflow: hidden;
+		box-shadow: 0 20px 35px rgba(15, 23, 42, 0.25);
 	}
 
 	.label {
