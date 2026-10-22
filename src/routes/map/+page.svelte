@@ -35,6 +35,7 @@
 	};
 
 	let round = $state<RoundState>(createRound());
+	let selectedId = $state<string | null>(null);
 	const winner = $derived(countries.find((country) => country.id === round.winnerId) ?? null);
 	const winnerPolioStatus = $derived(winner ? getPolioStatus(winner.name) : null);
 	const score = $derived(roundScore(round));
@@ -88,6 +89,9 @@
 
 	function handleCountrySelect(detail: CountrySelectDetail) {
 		round = applyGuess(round, detail.id);
+		if (countries.some((country) => country.id === detail.id)) {
+			selectedId = detail.id;
+		}
 	}
 
 	function startNewRound() {
@@ -111,7 +115,7 @@
 
 	<div class="layout">
 		<div class="map-panel">
-			<World onCountrySelect={handleCountrySelect}></World>
+			<World onCountrySelect={handleCountrySelect} selectedCountryId={selectedId}></World>
 		</div>
 
 		<aside class="sidebar">

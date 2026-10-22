@@ -37,7 +37,6 @@ class FakeElement {
 		}
 		return this.children.find((child) => child._tagName === 'title') ?? null;
 	}
-
 }
 
 const OriginalElement = globalThis.Element;
@@ -83,6 +82,22 @@ describe('country selection resolution', () => {
 			id: 'bd',
 			name: 'Bangladesh',
 			element: group
+		});
+	});
+
+	it('prefers the country code group over a nested region group', () => {
+		const country = new FakeElement('g', 'cn');
+		country.appendChild(new FakeElement('title', undefined, 'China'));
+		const region = new FakeElement('g', 'cnx');
+		region.appendChild(new FakeElement('title', undefined, 'China, People’s Republic of'));
+		country.appendChild(region);
+		const shape = new FakeElement('path', 'path2708');
+		region.appendChild(shape);
+
+		expect(resolveCountrySelection(shape as unknown as EventTarget)).toEqual({
+			id: 'cn',
+			name: 'China',
+			element: country
 		});
 	});
 });

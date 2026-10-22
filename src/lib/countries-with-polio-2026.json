@@ -510,6 +510,12 @@
     "WildPoliovirusCasesByCountry_2025": null
   },
   {
+    "flagCode": "DZ",
+    "country": "Algeria",
+    "DateCountryDeclaredPolioFree": null,
+    "WildPoliovirusCasesByCountry_2025": null
+  },
+  {
     "flagCode": "VE",
     "country": "Venezuela",
     "DateCountryDeclaredPolioFree": 1989,

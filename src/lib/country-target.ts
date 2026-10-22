@@ -10,17 +10,17 @@ export function resolveCountrySelection(target: EventTarget | null): CountrySele
 	}
 
 	let current: Element | null = target;
+	let country: CountrySelection | null = null;
 	while (current) {
 		const id = current.getAttribute('id')?.trim();
 		if (id) {
 			const title = current.querySelector('title')?.textContent?.trim();
 			if (title) {
-				return { id, name: title, element: current };
+				country = { id, name: title, element: current };
 			}
 		}
 
 		current = current.parentElement;
 	}
-
-	return null;
+	return country;
 }

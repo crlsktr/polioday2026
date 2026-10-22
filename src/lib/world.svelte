@@ -7,9 +7,16 @@
 		name: string;
 	};
 
-	let { onCountrySelect }: { onCountrySelect?: (detail: CountrySelectDetail) => void } = $props();
+	let {
+		onCountrySelect,
+		selectedCountryId
+	}: {
+		onCountrySelect?: (detail: CountrySelectDetail) => void;
+		selectedCountryId?: string | null;
+	} = $props();
 
 	import Ocean from './countries/ocean.svelte';
+	import Ma from './countries/ma.svelte';
 	import Sd from './countries/sd.svelte';
 	import Ss from './countries/ss.svelte';
 	import Pe from './countries/pe.svelte';
@@ -176,15 +183,38 @@
 	let isPanning = $state(false);
 	let suppressClick = $state(false);
 	let hoveredCountryElement: Element | null = null;
+	let selectedCountryElement: Element | null = null;
 
 	const pointerPositions = new Map<number, Point>();
 	let panPointerId: number | null = null;
 	let panLastPoint: Point | null = null;
 	let pointerDownPoint: Point | null = null;
+	let pointerDownTarget: EventTarget | null = null;
 	let pinchStartDistance = 0;
 	let pinchStartScale = 1;
 	let pinchStartTranslate: Point = { x: 0, y: 0 };
 	let pinchWorldPoint: Point | null = null;
+
+	$effect(() => {
+		const nextCountryId = selectedCountryId;
+		let nextCountryElement: Element | null = null;
+
+		if (nextCountryId && svgElement) {
+			for (const element of svgElement.querySelectorAll('[id]')) {
+				const country = resolveCountrySelection(element);
+				if (country && normalizeCountryId(country.id) === nextCountryId) {
+					nextCountryElement = country.element;
+					break;
+				}
+			}
+		}
+
+		if (selectedCountryElement !== nextCountryElement) {
+			selectedCountryElement?.classList.remove('country-selected');
+			nextCountryElement?.classList.add('country-selected');
+			selectedCountryElement = nextCountryElement;
+		}
+	});
 
 	function clamp(value: number, min: number, max: number): number {
 		return Math.min(Math.max(value, min), max);
@@ -317,10 +347,12 @@
 	function handleMapClick(event: MouseEvent) {
 		if (suppressClick) {
 			suppressClick = false;
+			pointerDownTarget = null;
 			return;
 		}
 
-		emitCountrySelection(event.target);
+		emitCountrySelection(pointerDownTarget ?? event.target);
+		pointerDownTarget = null;
 	}
 
 	function handlePointerDown(event: PointerEvent) {
@@ -337,6 +369,7 @@
 			panPointerId = event.pointerId;
 			panLastPoint = point;
 			pointerDownPoint = point;
+			pointerDownTarget = event.target;
 			isPanning = false;
 			suppressClick = false;
 			setHoveredCountry(event.target);
@@ -566,6 +599,16 @@
 				stroke-width: 1.1;
 			}
 
+			.country-selected,
+			.country-selected path,
+			.country-selected circle,
+			.country-selected ellipse,
+			.country-selected polygon {
+				fill: #38bdf8;
+				stroke: #0f172a;
+				stroke-width: 1.1;
+			}
+
 			/*
  * Styles for coastlines of islands and continents with no borders on them
  * (all of them should also belong to the class "landxx" - to allow for all land to be modified at once by refining "landxx" style's definition further down)
@@ -786,6 +829,7 @@
 			<Is></Is>
 			<Ni></Ni>
 			<Cl></Cl>
+			<Ma></Ma>
 			<Lr></Lr>
 			<Cf></Cf>
 			<Sk></Sk>
